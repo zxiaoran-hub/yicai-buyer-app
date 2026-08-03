@@ -69,10 +69,10 @@ const suppliers = {
   _getContainers() {
     const ids = ['suppliers-list', 'suppliers-list-mobile'];
     return ids.map(id => document.getElementById(id)).filter(Boolean);
-  }
+  },
   _setContainers(html) {
     this._getContainers().forEach(c => c.innerHTML = html);
-  }
+  },
 
   async loadData() {
     const containers = this._getContainers();
@@ -605,12 +605,3 @@ const suppliers = {
     }
   }
 };
-
-
-// ==================== XSS 防护 ====================
-function escapeHtml(str) {
-  if (!str) return '';
-  const s = String(str);
-  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-  return s.replace(/[&<>"']/g, c => map[c]);
-}

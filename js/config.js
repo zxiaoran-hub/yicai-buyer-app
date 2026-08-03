@@ -2,6 +2,14 @@
 const SUPABASE_URL = 'https://spb-m06skr4cysol4lwz.supabase.opentrust.net';
 const SUPABASE_ANON_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYW5vbiIsInJlZiI6InNwYi1tMDZza3I0Y3lzb2w0bHd6IiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3ODUzNzcwNjIsImV4cCI6MjEwMDk1MzA2Mn0.2OO2jmTetq6vOE4xTRruNMXVUI89ATMIStpIl4ul3kI';
 
+// ==================== XSS 防护 ====================
+function escapeHtml(str) {
+  if (!str) return '';
+  const s = String(str);
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return s.replace(/[&<>"']/g, c => map[c]);
+}
+
 // 检查 token 是否即将过期（5分钟内过期视为已过期）
 function isTokenExpired(token) {
   try {
