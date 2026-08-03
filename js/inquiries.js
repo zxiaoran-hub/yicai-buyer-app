@@ -87,6 +87,8 @@ const inquiries = {
     document.getElementById('inquiry-target-price').value = '';
     document.getElementById('inquiry-deadline').value = '';
     document.getElementById('inquiry-public').value = 'true';
+    const anonCb = document.getElementById('inquiry-anonymous');
+    if (anonCb) anonCb.checked = false;
 
     // 如果有指定供应商名称，预填到描述中
     if (targetSupplierName) {
@@ -172,6 +174,7 @@ const inquiries = {
       target_price: parseFloat(document.getElementById('inquiry-target-price').value) || null,
       deadline: document.getElementById('inquiry-deadline').value || null,
       is_public: document.getElementById('inquiry-public').value === 'true',
+      is_anonymous: document.getElementById('inquiry-anonymous')?.checked || false,
       status: 'open'
     };
 
