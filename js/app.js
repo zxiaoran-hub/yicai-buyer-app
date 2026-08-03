@@ -542,6 +542,11 @@ function switchPage(page) {
     if (page === 'suppliers') {
       console.log('[switchPage] 加载 suppliers, typeof:', typeof suppliers);
       if (typeof suppliers !== 'undefined' && suppliers.load) suppliers.load();
+      // 同时加载商品发现数据（默认显示商品Tab）
+      if (typeof productDiscovery !== 'undefined' && productDiscovery.load && !productDiscovery._loaded) {
+        productDiscovery.load();
+        productDiscovery._loaded = true;
+      }
     }
     if (page === 'favorites') {
       console.log('[switchPage] 加载 favorites');
