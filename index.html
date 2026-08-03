@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>异采 · 品牌方端</title>
-  <link rel="stylesheet" href="css/style.css?v=9">
+  <link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body>
 
@@ -233,8 +233,8 @@
 
   <!-- ===== 订单管理 ===== -->
   <div id="page-orders" class="page">
-    <div class="flex-between mb-16">
-      <div class="page-title" style="margin-bottom:0;">订单管理</div>
+    <div class="page-header-bar">
+      <div class="page-title" style="margin:0;">订单管理</div>
       <button class="btn btn-primary btn-sm" onclick="orders.showCreateForm()">+ 创建订单</button>
     </div>
     <div class="filter-tabs">
@@ -248,179 +248,95 @@
     <div id="orders-list"></div>
   </div>
 
-  <!-- ===== 发现页（PC端左右分栏，移动端Tab切换） ===== -->
+  <!-- ===== 发现页（Tab切换：商品 / 供应商） ===== -->
   <div id="page-suppliers" class="page">
     <div class="page-header-bar">
       <div class="page-title" style="margin:0;">发现</div>
     </div>
 
-    <!-- 移动端 Tab 切换 -->
-    <div class="discovery-tabs-mobile" style="display:flex;gap:0;margin-bottom:16px;background:var(--bg-secondary,#f5f5f5);border-radius:10px;padding:3px;">
-      <button class="discovery-tab active" id="tab-supplier" onclick="discoverySwitchTab('supplier')" style="flex:1;padding:8px 0;border:none;background:transparent;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;">按供应商</button>
-      <button class="discovery-tab" id="tab-product" onclick="discoverySwitchTab('product')" style="flex:1;padding:8px 0;border:none;background:transparent;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;">按商品</button>
+    <!-- Tab 切换：商品（左）/ 供应商（右） -->
+    <div class="discovery-tab-bar">
+      <button class="discovery-tab-btn active" id="tab-product" onclick="discoverySwitchTab('product')">🏷️ 商品</button>
+      <button class="discovery-tab-btn" id="tab-supplier" onclick="discoverySwitchTab('supplier')">🏭 供应商</button>
     </div>
 
-    <!-- PC端左右分栏 -->
-    <div class="discovery-grid-pc">
-      <!-- 左侧：商品视图 -->
-      <div class="discovery-column discovery-col-product">
-        <div class="discovery-col-title">商品</div>
-        <div class="sd-search-bar">
-          <input type="text" id="product-search-buyer" class="form-input sd-search-input" placeholder="搜索商品名称、品类..." oninput="productDiscovery.search(this.value)">
-        </div>
-        <div class="sd-filters" id="product-filters">
-          <div class="sd-filter-group">
-            <select class="form-select sd-filter-select" id="product-filter-category" onchange="productDiscovery.setFilter('category', this.value)">
-              <option value="">全部品类</option>
-              <option value="护肤">护肤</option>
-              <option value="彩妆">彩妆</option>
-              <option value="面膜">面膜</option>
-              <option value="精华">精华</option>
-              <option value="洗护">洗护</option>
-              <option value="防晒">防晒</option>
-              <option value="香氛">香氛</option>
-              <option value="身体护理">身体护理</option>
-              <option value="个护">个护</option>
-            </select>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" id="pfilter-sample" onclick="productDiscovery.toggleFilter('sample')">🧪 可取样</button>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" id="pfilter-custom" onclick="productDiscovery.toggleFilter('custom')">🔧 可定制</button>
-          </div>
-        </div>
-        <div id="products-discovery-list"></div>
+    <!-- 商品视图 -->
+    <div id="view-product" class="discovery-view">
+      <div class="sd-search-bar">
+        <input type="text" id="product-search-buyer" class="form-input sd-search-input" placeholder="搜索商品名称、品类..." oninput="productDiscovery.search(this.value)">
       </div>
-
-      <!-- 右侧：供应商视图 -->
-      <div class="discovery-column discovery-col-supplier">
-        <div class="discovery-col-title">供应商</div>
-        <div class="sd-search-bar">
-          <input type="text" id="supplier-search" class="form-input sd-search-input" placeholder="搜索公司名、品类..." oninput="suppliers.search(this.value)">
+      <div class="sd-filters" id="product-filters">
+        <div class="sd-filter-group">
+          <select class="form-select sd-filter-select" id="product-filter-category" onchange="productDiscovery.setFilter('category', this.value)">
+            <option value="">全部品类</option>
+            <option value="护肤">护肤</option>
+            <option value="彩妆">彩妆</option>
+            <option value="面膜">面膜</option>
+            <option value="精华">精华</option>
+            <option value="洗护">洗护</option>
+            <option value="防晒">防晒</option>
+            <option value="香氛">香氛</option>
+            <option value="身体护理">身体护理</option>
+            <option value="个护">个护</option>
+          </select>
         </div>
-        <div class="sd-filters">
-          <div class="sd-filter-group">
-            <select class="form-select sd-filter-select" onchange="suppliers.setFilter('category', this.value)">
-              <option value="">全部品类</option>
-              <option value="护肤">护肤</option>
-              <option value="彩妆">彩妆</option>
-              <option value="面膜">面膜</option>
-              <option value="精华">精华</option>
-              <option value="洗护">洗护</option>
-              <option value="防晒">防晒</option>
-              <option value="香氛">香氛</option>
-              <option value="身体护理">身体护理</option>
-              <option value="个护">个护</option>
-            </select>
-          </div>
-          <div class="sd-filter-group">
-            <select class="form-select sd-filter-select" onchange="suppliers.setFilter('region', this.value)">
-              <option value="">全部地区</option>
-              <option value="广东">广东</option>
-              <option value="浙江">浙江</option>
-              <option value="江苏">江苏</option>
-              <option value="上海">上海</option>
-              <option value="山东">山东</option>
-              <option value="福建">福建</option>
-              <option value="北京">北京</option>
-              <option value="四川">四川</option>
-              <option value="湖北">湖北</option>
-              <option value="河南">河南</option>
-              <option value="河北">河北</option>
-              <option value="安徽">安徽</option>
-              <option value="江西">江西</option>
-              <option value="其他">其他</option>
-            </select>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" data-filter="verified" data-value="yes" onclick="suppliers.setFilter('verified', suppliers.currentFilters.verified==='yes'?'':'yes')">✓ 已认证</button>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" data-filter="featured" data-value="yes" onclick="suppliers.setFilter('featured', suppliers.currentFilters.featured==='yes'?'':'yes')">⭐ 精选</button>
-          </div>
+        <div class="sd-filter-group">
+          <button class="sd-filter-btn" id="pfilter-sample" onclick="productDiscovery.toggleFilter('sample')">🧪 可取样</button>
         </div>
-        <div id="suppliers-list"></div>
+        <div class="sd-filter-group">
+          <button class="sd-filter-btn" id="pfilter-custom" onclick="productDiscovery.toggleFilter('custom')">🔧 可定制</button>
+        </div>
       </div>
+      <div id="products-discovery-list"></div>
     </div>
 
-    <!-- 移动端视图容器（Tab切换控制） -->
-    <div class="discovery-mobile-views">
-      <div id="view-supplier">
-        <div class="sd-search-bar">
-          <input type="text" id="supplier-search-mobile" class="form-input sd-search-input" placeholder="搜索公司名、品类、描述..." oninput="suppliers.search(this.value)">
-        </div>
-        <div class="sd-filters">
-          <div class="sd-filter-group">
-            <select class="form-select sd-filter-select" onchange="suppliers.setFilter('category', this.value)">
-              <option value="">全部品类</option>
-              <option value="护肤">护肤</option>
-              <option value="彩妆">彩妆</option>
-              <option value="面膜">面膜</option>
-              <option value="精华">精华</option>
-              <option value="洗护">洗护</option>
-              <option value="防晒">防晒</option>
-              <option value="香氛">香氛</option>
-              <option value="身体护理">身体护理</option>
-              <option value="个护">个护</option>
-            </select>
-          </div>
-          <div class="sd-filter-group">
-            <select class="form-select sd-filter-select" onchange="suppliers.setFilter('region', this.value)">
-              <option value="">全部地区</option>
-              <option value="广东">广东</option>
-              <option value="浙江">浙江</option>
-              <option value="江苏">江苏</option>
-              <option value="上海">上海</option>
-              <option value="山东">山东</option>
-              <option value="福建">福建</option>
-              <option value="北京">北京</option>
-              <option value="四川">四川</option>
-              <option value="湖北">湖北</option>
-              <option value="河南">河南</option>
-              <option value="河北">河北</option>
-              <option value="安徽">安徽</option>
-              <option value="江西">江西</option>
-              <option value="其他">其他</option>
-            </select>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" data-filter="verified" data-value="yes" onclick="suppliers.setFilter('verified', suppliers.currentFilters.verified==='yes'?'':'yes')">✓ 已认证</button>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" data-filter="featured" data-value="yes" onclick="suppliers.setFilter('featured', suppliers.currentFilters.featured==='yes'?'':'yes')">⭐ 精选</button>
-          </div>
-        </div>
-        <div id="suppliers-list-mobile"></div>
+    <!-- 供应商视图 -->
+    <div id="view-supplier" class="discovery-view" style="display:none;">
+      <div class="sd-search-bar">
+        <input type="text" id="supplier-search" class="form-input sd-search-input" placeholder="搜索公司名、品类、地区..." oninput="suppliers.search(this.value)">
       </div>
-      <div id="view-product" style="display:none;">
-        <div class="sd-search-bar">
-          <input type="text" id="product-search-buyer-mobile" class="form-input sd-search-input" placeholder="搜索商品名称、品类、描述..." oninput="productDiscovery.search(this.value)">
+      <div class="sd-filters">
+        <div class="sd-filter-group">
+          <select class="form-select sd-filter-select" onchange="suppliers.setFilter('category', this.value)">
+            <option value="">全部品类</option>
+            <option value="护肤">护肤</option>
+            <option value="彩妆">彩妆</option>
+            <option value="面膜">面膜</option>
+            <option value="精华">精华</option>
+            <option value="洗护">洗护</option>
+            <option value="防晒">防晒</option>
+            <option value="香氛">香氛</option>
+            <option value="身体护理">身体护理</option>
+            <option value="个护">个护</option>
+          </select>
         </div>
-        <div class="sd-filters" id="product-filters-mobile">
-          <div class="sd-filter-group">
-            <select class="form-select sd-filter-select" id="product-filter-category-mobile" onchange="productDiscovery.setFilter('category', this.value)">
-              <option value="">全部品类</option>
-              <option value="护肤">护肤</option>
-              <option value="彩妆">彩妆</option>
-              <option value="面膜">面膜</option>
-              <option value="精华">精华</option>
-              <option value="洗护">洗护</option>
-              <option value="防晒">防晒</option>
-              <option value="香氛">香氛</option>
-              <option value="身体护理">身体护理</option>
-              <option value="个护">个护</option>
-            </select>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" id="pfilter-sample-mobile" onclick="productDiscovery.toggleFilter('sample')">🧪 可取样</button>
-          </div>
-          <div class="sd-filter-group">
-            <button class="sd-filter-btn" id="pfilter-custom-mobile" onclick="productDiscovery.toggleFilter('custom')">🔧 可定制</button>
-          </div>
+        <div class="sd-filter-group">
+          <select class="form-select sd-filter-select" onchange="suppliers.setFilter('region', this.value)">
+            <option value="">全部地区</option>
+            <option value="广东">广东</option>
+            <option value="浙江">浙江</option>
+            <option value="江苏">江苏</option>
+            <option value="上海">上海</option>
+            <option value="山东">山东</option>
+            <option value="福建">福建</option>
+            <option value="北京">北京</option>
+            <option value="四川">四川</option>
+            <option value="湖北">湖北</option>
+            <option value="河南">河南</option>
+            <option value="河北">河北</option>
+            <option value="安徽">安徽</option>
+            <option value="江西">江西</option>
+            <option value="其他">其他</option>
+          </select>
         </div>
-        <div id="products-discovery-list-mobile"></div>
+        <div class="sd-filter-group">
+          <button class="sd-filter-btn" data-filter="verified" data-value="yes" onclick="suppliers.setFilter('verified', suppliers.currentFilters.verified==='yes'?'':'yes')">✓ 已认证</button>
+        </div>
+        <div class="sd-filter-group">
+          <button class="sd-filter-btn" data-filter="featured" data-value="yes" onclick="suppliers.setFilter('featured', suppliers.currentFilters.featured==='yes'?'':'yes')">⭐ 精选</button>
+        </div>
       </div>
+      <div id="suppliers-list"></div>
     </div>
   </div>
 
@@ -829,10 +745,10 @@
 </div>
 
 <!-- JS -->
-<script src="js/config.js?v=9"></script>
-<script src="js/app.js?v=9"></script>
-<script src="js/inquiries.js?v=9"></script>
-<script src="js/quotes.js?v=9"></script>
+<script src="js/config.js?v=10"></script>
+<script src="js/app.js?v=10"></script>
+<script src="js/inquiries.js?v=10"></script>
+<script src="js/quotes.js?v=10"></script>
 <!-- ===== 商品详情弹窗 ===== -->
 <div id="product-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('product-detail-modal')">
   <div class="modal-content" style="max-width:600px;">
@@ -844,13 +760,13 @@
   </div>
 </div>
 
-<script src="js/orders.js?v=9"></script>
-<script src="js/suppliers.js?v=9"></script>
-<script src="js/product-discovery.js?v=9"></script>
-<script src="js/favorites.js?v=9"></script>
-<script src="js/my-suppliers.js?v=9"></script>
-<script src="js/admin.js?v=9"></script>
-<script src="js/profile.js?v=9"></script>
+<script src="js/orders.js?v=10"></script>
+<script src="js/suppliers.js?v=10"></script>
+<script src="js/product-discovery.js?v=10"></script>
+<script src="js/favorites.js?v=10"></script>
+<script src="js/my-suppliers.js?v=10"></script>
+<script src="js/admin.js?v=10"></script>
+<script src="js/profile.js?v=10"></script>
 <script>
 // ===== 演示模式功能 =====
 function showDemoPanel() {

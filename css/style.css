@@ -1109,40 +1109,35 @@ img { max-width: 100%; display: block; }
 }
 .gap-8 { gap: 8px; }
 
-/* ===== 发现页 PC/移动端响应式 ===== */
-/* 默认（移动端）：PC分栏隐藏，移动端Tab和视图显示 */
-.discovery-grid-pc { display: none; }
-.discovery-mobile-views { display: block; }
-.discovery-tabs-mobile { display: flex !important; }
-
-.discovery-col-title {
-  font-size: 15px;
+/* ===== 发现页 Tab 切换 ===== */
+.discovery-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  background: var(--bg-secondary, #f5f5f5);
+  border-radius: 10px;
+  padding: 3px;
+}
+.discovery-tab-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text-secondary);
+}
+.discovery-tab-btn.active {
+  background: #fff;
+  color: var(--primary);
   font-weight: 600;
-  color: var(--dark);
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
-
-.discovery-column {
-  min-height: 300px;
-}
-
-/* PC端：左右分栏 */
-@media (min-width: 768px) {
-  .discovery-grid-pc {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-  .discovery-mobile-views { display: none; }
-  .discovery-tabs-mobile { display: none !important; }
-  .discovery-column {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
+.discovery-view {
+  /* container for each tab view */
 }
 
 /* ===== 商品发现 - 商品卡片网格 ===== */

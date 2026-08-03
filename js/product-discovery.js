@@ -13,24 +13,12 @@ function discoverySwitchTab(tab) {
   if (tab === 'supplier') {
     supplierView.style.display = '';
     productView.style.display = 'none';
-    tabSupplier.style.background = 'white';
-    tabSupplier.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-    tabSupplier.style.color = 'var(--primary)';
     tabSupplier.classList.add('active');
-    tabProduct.style.background = 'transparent';
-    tabProduct.style.boxShadow = 'none';
-    tabProduct.style.color = 'var(--text-secondary)';
     tabProduct.classList.remove('active');
   } else {
     supplierView.style.display = 'none';
     productView.style.display = '';
-    tabProduct.style.background = 'white';
-    tabProduct.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-    tabProduct.style.color = 'var(--primary)';
     tabProduct.classList.add('active');
-    tabSupplier.style.background = 'transparent';
-    tabSupplier.style.boxShadow = 'none';
-    tabSupplier.style.color = 'var(--text-secondary)';
     tabSupplier.classList.remove('active');
     // 首次切换到商品时加载
     if (!productDiscovery._loaded) {
