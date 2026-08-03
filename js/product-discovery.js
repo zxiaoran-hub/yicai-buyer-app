@@ -58,11 +58,16 @@ const productDiscovery = {
   allProducts: [],
   favorites: new Set(),
 
-  async load() {
-    const container = document.getElementById('products-discovery-list');
-    if (!container) return;
-    container.innerHTML = '<div class="text-center" style="padding:30px;color:var(--text-secondary);">加载商品中...</div>';
+  _getContainers() {
+    const ids = ['products-discovery-list', 'products-discovery-list-mobile'];
+    return ids.map(id => document.getElementById(id)).filter(Boolean);
+  },
+  _setContainers(html) {
+    this._getContainers().forEach(c => c.innerHTML = html);
+  },
 
+  async load() {
+    this._setContainers('<div class="text-center" style="padding:30px;color:var(--text-secondary);">加载商品中...</div>');
     await this.loadFavorites();
     await this.searchProducts();
   },
@@ -109,9 +114,6 @@ const productDiscovery = {
   },
 
   async searchProducts() {
-    const container = document.getElementById('products-discovery-list');
-    if (!container) return;
-
     try {
       const result = await supabase.rpc('search_products', {
         p_keyword: this.currentKeyword || null,
@@ -123,26 +125,24 @@ const productDiscovery = {
       });
 
       if (!Array.isArray(result)) {
-        // RPC 失败，回退到直接查询
-        await this.fallbackSearch(container);
+        await this.fallbackSearch();
         return;
       }
 
       this.allProducts = result;
-      this.renderProducts(container);
+      this.renderProducts();
     } catch (e) {
-      // RPC 不可用，回退
-      await this.fallbackSearch(container);
+      await this.fallbackSearch();
     }
   },
 
-  async fallbackSearch(container) {
+  async fallbackSearch() {
     try {
       const params = { select: '*', filter: { status: 'active' }, order: 'created_at.desc', limit: 100 };
       const data = await supabase.query('products', params);
 
       if (!Array.isArray(data)) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">暂无商品</div><div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">供应商还未上架商品</div></div>';
+        this._setContainers('<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">暂无商品</div><div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">供应商还未上架商品</div></div>');
         return;
       }
 
@@ -166,21 +166,21 @@ const productDiscovery = {
       }
 
       this.allProducts = filtered;
-      this.renderProducts(container);
+      this.renderProducts();
     } catch (e) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败: ' + escapeHtml(e.message) + '</div></div>';
+      this._setContainers('<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败: ' + escapeHtml(e.message) + '</div></div>');
     }
   },
 
-  renderProducts(container) {
+  renderProducts() {
     if (this.allProducts.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">暂无匹配商品</div><div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">试试调整筛选条件</div></div>';
+      this._setContainers('<div class="empty-state"><div class="empty-icon"></div><div class="empty-text">暂无匹配商品</div><div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">试试调整筛选条件</div></div>');
       return;
     }
 
-    container.innerHTML = '<div class="product-discovery-grid">' +
+    this._setContainers('<div class="product-discovery-grid">' +
       this.allProducts.map(p => this.renderProductCard(p)).join('') +
-      '</div>';
+      '</div>');
   },
 
   renderProductCard(p) {
@@ -312,8 +312,7 @@ const productDiscovery = {
         showToast('已收藏 ❤️');
       }
       // 重新渲染列表
-      const container = document.getElementById('products-discovery-list');
-      if (container) this.renderProducts(container);
+      this.renderProducts();
     } catch (e) {
       showToast('操作失败: ' + e.message);
     }

@@ -66,13 +66,22 @@ const suppliers = {
     });
   },
 
+  _getContainers() {
+    const ids = ['suppliers-list', 'suppliers-list-mobile'];
+    return ids.map(id => document.getElementById(id)).filter(Boolean);
+  }
+  _setContainers(html) {
+    this._getContainers().forEach(c => c.innerHTML = html);
+  }
+
   async loadData() {
-    const container = document.getElementById('suppliers-list');
-    if (!container) return;
+    const containers = this._getContainers();
+    if (containers.length === 0) return;
 
     // 如果首次加载，显示loading
     if (this.currentPage === 0) {
-      container.innerHTML = '<div class="text-center" style="padding:30px;color:var(--text-secondary);">加载中...</div>';
+      const loading = '<div class="text-center" style="padding:30px;color:var(--text-secondary);">加载中...</div>';
+      this._setContainers(loading);
     }
 
     try {
@@ -122,7 +131,7 @@ const suppliers = {
 
       if (!Array.isArray(data)) {
         if (this.currentPage === 0) {
-          container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败</div></div>';
+          this._setContainers('<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败</div></div>');
         }
         return;
       }
@@ -165,11 +174,8 @@ const suppliers = {
   },
 
   renderAll() {
-    const container = document.getElementById('suppliers-list');
-    if (!container) return;
-
     if (this.allData.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏭</div><div class="empty-text">暂无匹配的供应商</div><div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">试试调整筛选条件</div></div>';
+      this._setContainers('<div class="empty-state"><div class="empty-icon">🏭</div><div class="empty-text">暂无匹配的供应商</div><div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">试试调整筛选条件</div></div>');
       return;
     }
 
@@ -214,7 +220,7 @@ const suppliers = {
       html += '<div class="sd-load-more" onclick="suppliers.loadMore()"><span>加载更多</span><span style="font-size:12px;">↓</span></div>';
     }
 
-    container.innerHTML = html;
+    this._setContainers(html);
   },
 
   renderCard(item, isFeatured) {

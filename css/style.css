@@ -1090,7 +1090,60 @@ img { max-width: 100%; display: block; }
 .mb-16 { margin-bottom: 16px; }
 .flex { display: flex; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+/* 页面标题栏：标题 + 操作按钮，不换行 */
+.page-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  min-height: 36px;
+}
+.page-header-bar .page-title {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.page-header-bar .btn {
+  flex-shrink: 0;
+}
 .gap-8 { gap: 8px; }
+
+/* ===== 发现页 PC/移动端响应式 ===== */
+/* 默认（移动端）：PC分栏隐藏，移动端Tab和视图显示 */
+.discovery-grid-pc { display: none; }
+.discovery-mobile-views { display: block; }
+.discovery-tabs-mobile { display: flex !important; }
+
+.discovery-col-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.discovery-column {
+  min-height: 300px;
+}
+
+/* PC端：左右分栏 */
+@media (min-width: 768px) {
+  .discovery-grid-pc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .discovery-mobile-views { display: none; }
+  .discovery-tabs-mobile { display: none !important; }
+  .discovery-column {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+}
 
 /* ===== 商品发现 - 商品卡片网格 ===== */
 .product-discovery-grid {
