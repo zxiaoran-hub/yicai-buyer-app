@@ -567,6 +567,8 @@ img { max-width: 100%; display: block; }
   font-size: 11px;
   font-weight: 500;
 }
+.badge-primary { background: #DBEAFE; color: #1E40AF; }
+.badge-default { background: #F3F4F6; color: #6B7280; }
 .badge-success { background: #D1FAE5; color: #065F46; }
 .badge-warning { background: #FEF3C7; color: #92400E; }
 .badge-info { background: #DBEAFE; color: #1E40AF; }

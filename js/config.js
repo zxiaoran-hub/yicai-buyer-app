@@ -254,3 +254,63 @@ const supabase = {
     return 0;
   }
 };
+
+// ============ 通用工具函数 ============
+
+// 状态映射表
+const STATUS_MAP = {
+  // 询价状态
+  open: { label: '进行中', color: 'primary' },
+  closed: { label: '已关闭', color: 'default' },
+  cancelled: { label: '已取消', color: 'default' },
+  // 报价状态
+  pending: { label: '待处理', color: 'warning' },
+  accepted: { label: '已接受', color: 'success' },
+  rejected: { label: '已拒绝', color: 'danger' },
+  // 订单状态
+  confirmed: { label: '已确认', color: 'info' },
+  producing: { label: '生产中', color: 'warning' },
+  completed: { label: '已完成', color: 'success' }
+};
+
+function getStatusClass(status) {
+  const map = {
+    open: 'status-open',
+    closed: 'status-closed',
+    cancelled: 'status-cancelled',
+    pending: 'status-pending',
+    accepted: 'status-accepted',
+    rejected: 'status-rejected',
+    confirmed: 'status-confirmed',
+    producing: 'status-producing',
+    completed: 'status-completed'
+  };
+  return map[status] || 'status-default';
+}
+
+function getStatusLabel(status) {
+  return STATUS_MAP[status]?.label || status || '未知';
+}
+
+function formatMoney(amount) {
+  if (amount === null || amount === undefined || amount === '') return '-';
+  const num = parseFloat(amount);
+  if (isNaN(num)) return '-';
+  return '¥' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function formatDateTime(dateStr) {
+  if (!dateStr) return '-';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const h = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `${y}-${m}-${day} ${h}:${min}`;
+  } catch {
+    return dateStr;
+  }
+}
