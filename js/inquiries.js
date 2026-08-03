@@ -45,6 +45,7 @@ const inquiries = {
       }
 
       const data = await supabase.query('buyer_inquiries', params);
+      console.log('[Inquiries] query result:', data, 'length:', data ? data.length : 'null');
 
       if (!data || data.length === 0) {
         container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">暂无询价记录</div></div>';

@@ -232,7 +232,7 @@ const supabase = {
   },
 
   async getCount(table, filter = {}) {
-    let url = `${this.url}/rest/v1/${table}?select=count&count=exact`;
+    let url = `${this.url}/rest/v1/${table}?select=*`;
     const queryParams = [];
     for (const [key, value] of Object.entries(filter)) {
       queryParams.push(`${key}=eq.${value}`);
