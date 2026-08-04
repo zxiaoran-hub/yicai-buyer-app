@@ -62,10 +62,9 @@ const productDiscovery = {
 
   async loadFavorites() {
     try {
-      const token = sessionStorage.getItem('token') || localStorage.getItem('token');
-      if (!token) return;
+      if (!localStorage.getItem('yicai_buyer_user')) return;
 
-      // 获取用户收藏列表
+      // 获取用户收藏列表（服务端按当前登录用户过滤）
       const result = await supabase.query('product_favorites', { select: 'product_id' });
       if (Array.isArray(result)) {
         this.favorites = new Set(result.map(f => f.product_id));
@@ -356,10 +355,15 @@ const productDiscovery = {
 // 辅助：获取当前用户 ID
 function getCurrentUserId() {
   try {
-    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    const userJson = localStorage.getItem('yicai_buyer_user');
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      if (user && user.id) return user.id;
+    }
+    const token = localStorage.getItem('yicai_buyer_token');
     if (!token) return null;
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.sub;
+    const payload = decodeJwtPayload(token);
+    return payload ? payload.sub : null;
   } catch (e) {
     return null;
   }
