@@ -275,8 +275,8 @@ const suppliers = {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     page.classList.add('active');
 
-    const container = document.getElementById('supplier-detail-content');
-    container.innerHTML = '<div class="text-center" style="padding:40px;color:var(--text-secondary);">加载中...</div>';
+    const container = document.getElementById('sd-tab-content');
+    if (container) container.innerHTML = '<div class="text-center" style="padding:40px;color:var(--text-secondary);">加载中...</div>';
 
     try {
       // 加载供应商信息
@@ -572,7 +572,17 @@ const suppliers = {
       }
       this.updateDetailButtons();
     } catch (e) {
-      showToast('操作失败');
+      // 数据库与本地状态不一致时同步本地状态，避免按钮卡死
+      const msg = String(e.message || '');
+      if (!isFav && /已存在|重复/.test(msg)) {
+        this.supplierFavorites.add(sid);
+        this.updateDetailButtons();
+      } else if (isFav && /未找到/.test(msg)) {
+        this.supplierFavorites.delete(sid);
+        this.updateDetailButtons();
+      } else {
+        showToast('操作失败');
+      }
     }
   },
 

@@ -179,6 +179,29 @@ const mySuppliers = {
 
     const tags = (rel.tags || []).map(t => `<span class="ms-tag">${escapeHtml(t)} <span onclick="mySuppliers.removeTag('${supplierId}','${escapeHtml(t)}')" style="cursor:pointer;margin-left:2px;">×</span></span>`).join('');
 
+    // 历史订单（便于复购时查看合作记录）
+    let historyHtml = '<div style="font-size:13px;color:#999;padding:8px 0;">暂无历史订单</div>';
+    try {
+      const ordersData = await supabase.query('buyer_orders', {
+        select: 'id,product_name,quantity,unit_price,status,created_at',
+        filter: { supplier_id: supplierId },
+        order: 'created_at.desc',
+        limit: 20
+      });
+      if (ordersData && ordersData.length) {
+        historyHtml = ordersData.map(o => `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;" onclick="orders.viewDetail('${o.id}')">
+            <div>
+              <div style="font-weight:600;">${escapeHtml(o.product_name || '-')}</div>
+              <div style="color:#999;font-size:12px;margin-top:2px;">#${o.id} · ${o.quantity || 0}件 · ${formatMoney((o.unit_price || 0) * (o.quantity || 0))}</div>
+            </div>
+            <span class="badge badge-${STATUS_MAP[o.status]?.color || 'info'}">${getStatusLabel(o.status)}</span>
+          </div>`).join('');
+      }
+    } catch (e) {
+      historyHtml = '<div style="font-size:13px;color:#999;padding:8px 0;">加载失败</div>';
+    }
+
     container.innerHTML = `
       <div class="ms-detail-section">
         <div class="ms-detail-name">${escapeHtml(rel.company_name)}</div>
@@ -219,6 +242,11 @@ const mySuppliers = {
           ${rel.contact_email ? `<div>📧 ${escapeHtml(rel.contact_email)}</div>` : ''}
         </div>
         <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="mySuppliers.contactFromDetail('${supplierId}')">📩 发起询盘</button>
+      </div>
+
+      <div class="ms-detail-section">
+        <div class="ms-detail-label">历史订单</div>
+        ${historyHtml}
       </div>
 
       <div class="ms-detail-section" style="margin-top:20px;">

@@ -221,7 +221,10 @@
 
   <!-- ===== 报价管理 ===== -->
   <div id="page-quotes" class="page">
-    <div class="page-title">报价管理</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="page-title" style="margin:0;">报价管理</div>
+      <button class="btn btn-outline btn-sm" id="quotes-export-btn" disabled onclick="quotes.exportExcel()">导出对比单</button>
+    </div>
     <div class="filter-tabs">
       <div class="filter-tab active" onclick="quotes.filter('all')">全部</div>
       <div class="filter-tab" onclick="quotes.filter('pending')">待评审</div>
@@ -423,13 +426,12 @@
     <div class="profile-header">
       <div class="profile-avatar"><span id="profile-avatar-text">采</span></div>
       <div class="profile-name" id="profile-user-name">-</div>
-      <div class="profile-role" id="profile-user-role">-</div>
+      <div class="profile-role" id="profile-user-role" style="display:none;">-</div>
       <div id="profile-company-info" style="font-size:13px;color:var(--text-secondary);margin-top:8px;">-</div>
     </div>
 
     <div class="profile-tabs">
       <div class="profile-tab active" onclick="profile.switchTab('info')">账号信息</div>
-      <div class="profile-tab" onclick="profile.switchTab('permissions')">我的权限</div>
       <div class="profile-tab" onclick="profile.switchTab('settings')">账号设置</div>
     </div>
 
@@ -438,7 +440,7 @@
       <div class="info-row"><span class="info-label">姓名</span><span class="info-value" id="info-name">-</span></div>
       <div class="info-row"><span class="info-label">邮箱</span><span class="info-value" id="info-email">-</span></div>
       <div class="info-row"><span class="info-label">公司</span><span class="info-value" id="info-company">-</span></div>
-      <div class="info-row"><span class="info-label">角色</span><span class="info-value" id="info-role">-</span></div>
+      <div class="info-row" style="display:none;"><span class="info-label">角色</span><span class="info-value" id="info-role">-</span></div>
       <div class="info-row"><span class="info-label">用户类型</span><span class="info-value" id="info-user-type">-</span></div>
     </div>
 
@@ -455,7 +457,6 @@
       <h3 class="mt-16">📱 关于</h3>
       <div class="info-row"><span class="info-label">平台</span><span class="info-value">异采 YiCai</span></div>
       <div class="info-row"><span class="info-label">版本</span><span class="info-value">v1.0</span></div>
-      <div class="info-row"><span class="info-label">终端</span><span class="info-value">品牌方端 Web App</span></div>
       <button class="btn btn-outline btn-block mt-16" style="color:var(--danger);border-color:var(--danger);" onclick="if(confirm('确定退出登录？')) logout()">退出登录</button>
     </div>
   </div>
@@ -465,6 +466,10 @@
     <div class="tab-item active" data-page="dashboard" onclick="switchPage('dashboard')">
       <span class="tab-icon">🏠</span>
       <span class="tab-label">工作台</span>
+    </div>
+    <div class="tab-item" data-page="suppliers" onclick="switchPage('suppliers')">
+      <span class="tab-icon">🔍</span>
+      <span class="tab-label">发现</span>
     </div>
     <div class="tab-item" data-page="inquiries" onclick="switchPage('inquiries')">
       <span class="tab-icon">📋</span>
@@ -477,10 +482,6 @@
     <div class="tab-item" data-page="orders" onclick="switchPage('orders')">
       <span class="tab-icon">📦</span>
       <span class="tab-label">订单</span>
-    </div>
-    <div class="tab-item" data-page="suppliers" onclick="switchPage('suppliers')">
-      <span class="tab-icon">🔍</span>
-      <span class="tab-label">发现</span>
     </div>
     <div class="tab-item" data-page="my-suppliers" onclick="switchPage('my-suppliers')">
       <span class="tab-icon">🏭</span>
@@ -615,6 +616,12 @@
         </select>
       </div>
       <div class="form-group">
+        <label>关联商品（可选，自动带出名称/单价/图片）</label>
+        <select id="order-product-id" class="form-select" onchange="orders.onProductChange(this.value)">
+          <option value="">不关联商品（手动填写）</option>
+        </select>
+      </div>
+      <div class="form-group">
         <label>产品名称 *</label>
         <input type="text" id="order-product-name" class="form-input" placeholder="产品名称" required>
       </div>
@@ -638,6 +645,17 @@
       </div>
       <button type="submit" class="btn btn-primary btn-block">提交订单</button>
     </form>
+  </div>
+</div>
+
+<!-- 报价详情 -->
+<div id="quote-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('quote-detail-modal')">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">报价详情</div>
+      <button class="modal-close" onclick="hideModal('quote-detail-modal')">×</button>
+    </div>
+    <div id="quote-detail-body"></div>
   </div>
 </div>
 
@@ -745,10 +763,11 @@
 </div>
 
 <!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="js/config.js?v=14"></script>
 <script src="js/app.js?v=12"></script>
 <script src="js/inquiries.js?v=12"></script>
-<script src="js/quotes.js?v=12"></script>
+<script src="js/quotes.js?v=13"></script>
 <!-- ===== 商品详情弹窗 ===== -->
 <div id="product-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('product-detail-modal')">
   <div class="modal-content" style="max-width:600px;">
@@ -760,11 +779,11 @@
   </div>
 </div>
 
-<script src="js/orders.js?v=12"></script>
-<script src="js/suppliers.js?v=12"></script>
+<script src="js/orders.js?v=13"></script>
+<script src="js/suppliers.js?v=14"></script>
 <script src="js/product-discovery.js?v=13"></script>
 <script src="js/favorites.js?v=12"></script>
-<script src="js/my-suppliers.js?v=12"></script>
+<script src="js/my-suppliers.js?v=13"></script>
 <script src="js/admin.js?v=12"></script>
 <script src="js/profile.js?v=12"></script>
 <script>
